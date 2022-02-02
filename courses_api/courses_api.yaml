@@ -1,0 +1,512 @@
+openapi: "3.0.0" 
+info:  
+  title: "Course Schedule API" 
+  version: "1.0" 
+  description: "This API allows students, instructors, and advisors at MSU Denver to get information about the course sections being offered in a semester/year, including their schedule and instructor information." 
+paths: 
+  /courses: 
+    get: 
+      summary: "List courses" 
+      description: "Returns a list of all courses in the system." 
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of courses" 
+                items: 
+                  type: "object" 
+                  description: "A course" 
+                  required: 
+                    - prefix 
+                    - number 
+                    - title 
+                    - credits 
+                    - description 
+                  properties: 
+                    prefix:  
+                      description: "a 2 (or 3) letter subject prefix" 
+                      type: "string" 
+                    number:  
+                      description: "a 4-digit (or letter) code" 
+                      type: "string" 
+                    title: 
+                      description: "the title of the course" 
+                      type: "string" 
+                    description:  
+                      description: "the course description from the catalog" 
+                      type: "string" 
+                    credits: 
+                      description: "the number of credits of the course" 
+                      type: "integer" 
+                      format: "int64" 
+                    prereqs: 
+                      description: "the list of prerequisites for the course from the catalog" 
+                      type: "string" 
+  /courses/{prefix}: 
+    get: 
+      summary: "List courses with given prefix" 
+      description: "Returns a list of all courses with given prefix." 
+      parameters: 
+        - name: "prefix" 
+          description: "a 2 (or 3) letter subject prefix" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string"  
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of courses" 
+                items: 
+                  type: "object" 
+                  description: "A course" 
+                  required: 
+                    - prefix 
+                    - number 
+                    - title 
+                    - credits 
+                    - description 
+                  properties: 
+                    prefix:  
+                      description: "a 2 (or 3) letter subject prefix" 
+                      type: "string" 
+                    number:  
+                      description: "a 4-digit (or letter) code" 
+                      type: "string" 
+                    title: 
+                      description: "the title of the course" 
+                      type: "string" 
+                    description:  
+                      description: "the course description from the catalog" 
+                      type: "string" 
+                    credits: 
+                      description: "the number of credits of the course" 
+                      type: "integer" 
+                      format: "int64" 
+                    prereqs: 
+                      description: "the list of prerequisites for the course from the catalog" 
+                      type: "string" 
+  /courses/{prefix}/{number}: 
+    get: 
+      summary: "Get a full course description" 
+      description: "Returns the full description of a course given its prefix and number." 
+      parameters: 
+        - name: "prefix" 
+          description: "a 2 (or 3) letter subject prefix" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string" 
+        - name: "number" 
+          description: "a 4-digit (or letter) code" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string"
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "object" 
+                description: "A course" 
+                required: 
+                  - prefix 
+                  - number 
+                  - title 
+                  - credits 
+                  - description 
+                properties: 
+                  prefix:  
+                    description: "a 2 (or 3) letter subject prefix" 
+                    type: "string" 
+                  number:  
+                    description: "a 4-digit (or letter) code" 
+                    type: "string" 
+                  title: 
+                    description: "the title of the course" 
+                    type: "string" 
+                  description:  
+                    description: "the course description from the catalog" 
+                    type: "string" 
+                  credits: 
+                    description: "the number of credits of the course" 
+                    type: "integer" 
+                    format: "int64" 
+                  prereqs: 
+                    description: "the list of prerequisites for the course from the catalog" 
+                    type: "string" 
+  /courses/sections:
+    get:
+      summary: "List sections"
+      description: "Returns a list of all sections being offered, filtered by semester and/or year."
+      parameters:
+        - name: "semester"
+          description: "winter, spring, summer, or fall"
+          in: "query"
+          schema: 
+            type: "string"
+        - name: "year"
+          description: "year in yyyy format"
+          in: "query"
+          schema: 
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of sections" 
+                items: 
+                  type: "object" 
+                  description: "A section" 
+                  required:
+                    - crn
+                    - section
+                    - prefix
+                    - number
+                    - semester
+                    - year 
+                    - instructor
+                  properties:
+                    crn: 
+                      description: "Course Reference Number: a 5-digit number that uniquely identifies a course section"
+                      type: "integer"
+                      format: "int64"
+                    section:
+                      description: "Section number as a 3-digit (or letter) code"
+                      type: "string"
+                    prefix:  
+                      description: "a 2 (or 3) letter subject prefix" 
+                      type: "string" 
+                    number:  
+                      description: "a 4-digit (or letter) code" 
+                      type: "string" 
+                    semester:
+                      description: "winter, spring, summer, or fall"
+                      type: "string"
+                    year:
+                      description: "year in yyyy format"
+                      type: "integer"
+                      format: "int64"  
+                    times:
+                      description: "format: [MTWRFS] 99:99xm-99:99xm"
+                      type: "string"
+                    start: 
+                      description: "Date when the course section begins in the format yyyy-mm-dd"
+                      type: "string"
+                    end: 
+                      description: "Date when the course section ends in the format yyyy-mm-dd"
+                      type: "string"       
+                    location:
+                      description: "Location using building abbreviation and room number (e.g.: AES-220)"
+                      type: "string"
+                    campus:
+                      description: "Campus as in main or online, for example"
+                    instructor: 
+                      description: "Information about the instructor that is teaching the course section"
+                      type: "object"
+                      required:
+                        - email
+                        - name
+                      properties:
+                        email: 
+                          description: "The email of the instructor"
+                          type: "string"
+                        name: 
+                          description: "The name of the instructor"
+                          type: "string"
+                        title: 
+                          description: "The title of the instructor"
+                          type: "string"
+                        office: 
+                          description: "Ofice building abbreviation and room number (e.g.: AES-200R)"
+                          type: "string"
+                        hours: 
+                          description: "Format: [MTWRFS] 99:99xm-99:99xm"
+                          type: "string"
+  /courses/{prefix}/sections:
+    get:
+      summary: "List sections"
+      description: "Returns a list of all sections being offered for courses with a given prefix, filtered by semester and/or year."
+      parameters:
+        - name: "prefix" 
+          description: "a 2 (or 3) letter subject prefix" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string"  
+        - name: "semester"
+          description: "winter, spring, summer, or fall"
+          in: "query"
+          schema: 
+            type: "string"
+        - name: "year"
+          description: "year in yyyy format"
+          in: "query"
+          schema: 
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of sections" 
+                items: 
+                  type: "object" 
+                  description: "A section" 
+                  required:
+                    - crn
+                    - section
+                    - prefix
+                    - number
+                    - semester
+                    - year 
+                    - instructor
+                  properties:
+                    crn: 
+                      description: "Course Reference Number: a 5-digit number that uniquely identifies a course section"
+                      type: "integer"
+                      format: "int64"
+                    section:
+                      description: "Section number as a 3-digit (or letter) code"
+                      type: "string"
+                    prefix:  
+                      description: "a 2 (or 3) letter subject prefix" 
+                      type: "string" 
+                    number:  
+                      description: "a 4-digit (or letter) code" 
+                      type: "string" 
+                    semester:
+                      description: "winter, spring, summer, or fall"
+                      type: "string"
+                    year:
+                      description: "year in yyyy format"
+                      type: "integer"
+                      format: "int64"  
+                    times:
+                      description: "format: [MTWRFS] 99:99xm-99:99xm"
+                      type: "string"
+                    start: 
+                      description: "Date when the course section begins in the format yyyy-mm-dd"
+                      type: "string"
+                    end: 
+                      description: "Date when the course section ends in the format yyyy-mm-dd"
+                      type: "string"       
+                    location:
+                      description: "Location using building abbreviation and room number (e.g.: AES-220)"
+                      type: "string"
+                    campus:
+                      description: "Campus as in main or online, for example"
+                    instructor: 
+                      description: "Information about the instructor that is teaching the course section"
+                      type: "object"
+                      required:
+                        - email
+                        - name
+                      properties:
+                        email: 
+                          description: "The email of the instructor"
+                          type: "string"
+                        name: 
+                          description: "The name of the instructor"
+                          type: "string"
+                        title: 
+                          description: "The title of the instructor"
+                          type: "string"
+                        office: 
+                          description: "Ofice building abbreviation and room number (e.g.: AES-200R)"
+                          type: "string"
+                        hours: 
+                          description: "Format: [MTWRFS] 99:99xm-99:99xm"
+                          type: "string"
+  /courses/{prefix}/{number}/sections:
+    get:
+      summary: "List sections"
+      description: "Returns a list of all sections being offered for courses with a given prefix, filtered by semester and/or year."
+      parameters:
+        - name: "prefix" 
+          description: "a 2 (or 3) letter subject prefix" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string"  
+        - name: "number" 
+          description: "a 4-digit (or letter) code" 
+          in: "path" 
+          required: true 
+          schema:  
+            type: "string"
+        - name: "semester"
+          description: "winter, spring, summer, or fall"
+          in: "query"
+          schema: 
+            type: "string"
+        - name: "year"
+          description: "year in yyyy format"
+          in: "query"
+          schema: 
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of sections" 
+                items: 
+                  type: "object" 
+                  description: "A section" 
+                  required:
+                    - crn
+                    - section
+                    - prefix
+                    - number
+                    - semester
+                    - year 
+                    - instructor
+                  properties:
+                    crn: 
+                      description: "Course Reference Number: a 5-digit number that uniquely identifies a course section"
+                      type: "integer"
+                      format: "int64"
+                    section:
+                      description: "Section number as a 3-digit (or letter) code"
+                      type: "string"
+                    prefix:  
+                      description: "a 2 (or 3) letter subject prefix" 
+                      type: "string" 
+                    number:  
+                      description: "a 4-digit (or letter) code" 
+                      type: "string" 
+                    semester:
+                      description: "winter, spring, summer, or fall"
+                      type: "string"
+                    year:
+                      description: "year in yyyy format"
+                      type: "integer"
+                      format: "int64"  
+                    times:
+                      description: "format: [MTWRFS] 99:99xm-99:99xm"
+                      type: "string"
+                    start: 
+                      description: "Date when the course section begins in the format yyyy-mm-dd"
+                      type: "string"
+                    end: 
+                      description: "Date when the course section ends in the format yyyy-mm-dd"
+                      type: "string"       
+                    location:
+                      description: "Location using building abbreviation and room number (e.g.: AES-220)"
+                      type: "string"
+                    campus:
+                      description: "Campus as in main or online, for example"
+                    instructor: 
+                      description: "Information about the instructor that is teaching the course section"
+                      type: "object"
+                      required:
+                        - email
+                        - name
+                      properties:
+                        email: 
+                          description: "The email of the instructor"
+                          type: "string"
+                        name: 
+                          description: "The name of the instructor"
+                          type: "string"
+                        title: 
+                          description: "The title of the instructor"
+                          type: "string"
+                        office: 
+                          description: "Ofice building abbreviation and room number (e.g.: AES-200R)"
+                          type: "string"
+                        hours: 
+                          description: "Format: [MTWRFS] 99:99xm-99:99xm"
+                          type: "string"
+  /instructors: 
+    get: 
+      summary: "List all instructors" 
+      description: "Returns a List of all instructors in the system" 
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "array" 
+                description: "The list of instructors" 
+                items: 
+                  type: "object" 
+                  description: "An instructor" 
+                  required: 
+                    - email 
+                    - name 
+                  properties: 
+                    email: 
+                      description: "the email of the instructor" 
+                      type: "string" 
+                    name:  
+                      description: "the name of the instructor" 
+                      type: "string" 
+                    title:  
+                      description: "the title of the instructor" 
+                      type: "string" 
+                    office:  
+                      description: "office building abbreviation and room number (e.g.: AES-200R)" 
+                      type: "string" 
+                    hours: 
+                      description: "office hours of the instructor in the format: [MTWRFS] 99:99xm-99:99xm" 
+                      type: "string" 
+  /instructors/{email}: 
+    get: 
+      summary: "Get information about an specific instructor given the instructor's email" 
+      description: "Get detailed instructor information, including the instructor's name, title, office location, and office hours." 
+      parameters: 
+        - name: "email"  
+          description: "the email of the instructor" 
+          in: "path" 
+          required: true 
+          schema: 
+            type: "string" 
+      responses: 
+        "200": 
+          description: "successful operation" 
+          content:  
+            application/json: 
+              schema: 
+                type: "object" 
+                description: "An instructor" 
+                required: 
+                  - email 
+                  - name 
+                properties: 
+                  email: 
+                    description: "the email of the instructor" 
+                    type: "string" 
+                  name:  
+                    description: "the name of the instructor" 
+                    type: "string" 
+                  title:  
+                    description: "the title of the instructor" 
+                    type: "string" 
+                  office:  
+                    description: "office building abbreviation and room number (e.g.: AES-200R)" 
+                    type: "string" 
+                  hours: 
+                    description: "office hours of the instructor in the format: [MTWRFS] 99:99xm-99:99xm" 
+                    type: "string"
