@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:  
+  title: Course Schedule API
+  version: "1.0"
+  description: The Courses API allows users to get information about the courses being offered in a semester, including their class schedule and instructor information.
+paths:
+  /token:
+    get:
+      summary: Creates and returns a token
+      description: Authenticates a user, returning a new token.
+      parameters:
+        - name: email
+          description: user's email
+          in: header
+          required: true
+          schema: 
+            type: string
+        - name: password
+          description: user's password
+          in: header
+          required: true
+          schema: 
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content: 
+            application/json:
+              schema: 
+                type: object
+                description: access token
+                required:
+                  - token
+                properties:
+                  token:
+                    description: access token
+                    type: string
+        401:
+          description: unauthorized
+  /courses:
+    get:
+      summary: Returns a list of all courses
+      description: Returns a list of all courses. 
+      parameters: 
+        - name: token
+          description: authentication token 
+          in: query
+          required: true
+          schema: 
+            type: string 
+      responses: 
+        200: 
+          description: successful operation
+          content: 
+            application/json: 
+              schema: 
+                type: array 
+                items: 
+                  type: object
+                  properties:
+                    prefix: 
+                      type: string
+                    number:
+                      type: string
+                    title:
+                      type: string
+                    description: 
+                      type: string
+                    credits:
+                      type: integer
+                    prereqs:
+                      type: string 
+        401:
+          description: unauthorized
+          
