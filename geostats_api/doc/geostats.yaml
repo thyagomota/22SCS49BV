@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:  
+  title: Geostats API
+  version: "1.0"
+  description: Allows searching various statistics in the United States by region, state, county, city, and zipcode.
+components: 
+  schemas:
+    State:
+      type: object
+      properties: 
+        code: 
+          type: integer
+        name: 
+          type: string 
+        postal: 
+          type: string
+        population: 
+          type: integer
+        division: 
+          type: integer 
+      required:
+        - code
+        - name
+        - postal 
+        - population
+    Division: 
+      type: object
+      properties: 
+        code: 
+          type: integer
+        name: 
+          type: string 
+        states:
+          type: array
+          items: 
+            type: schema
+            $ref: "#/components/schemas/State"
+        region: 
+          type: integer 
+      required: 
+        - code
+        - name
+    Region: 
+      type: object 
+      properties: 
+        code: 
+          type: integer
+        name:
+          type: string
+        divisions:
+          type: array
+          items: 
+            type: schema
+            $ref: "#/components/schemas/Division"
+      required:
+        - code
+        - name
+paths:
+  /regions:
+    get:
+      summary: Returns the official regions in the United States
+      responses:
+        200:
+          description: successful operation
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: schema
+                  $ref: "#/components/schemas/Region"
+        404:
+          description: operation unsuccessful
+  /regions/{code}:
+    get:
+      summary: Returns a specific region, based on the given code
+      parameters:
+        - name: code
+          description: a region's code
+          in: path 
+          required: true
+          schema: 
+            type: integer
+      responses:
+        200:
+          description: successful operation
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: schema
+                  $ref: "#/components/schemas/Region"
+        404:
+          description: operation unsuccessful
